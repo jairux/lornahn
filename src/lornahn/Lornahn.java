@@ -1,11 +1,71 @@
 package lornahn;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
 import javax.swing.JOptionPane;
 
 public class Lornahn {   
     
     public static JOptionPane popup = new JOptionPane(); 
     public static Arbol arb = new Arbol();
-       
+    
+    
+    
+    //MANEJO DE FICHEROS
+    public static void leerFichero(){
+        File archivo = null;
+        FileReader fr = null;
+        BufferedReader br = null;
+        
+        try {
+          archivo = new File("data.txt");
+          fr = new FileReader(archivo);
+          br = new BufferedReader(fr);
+          
+          String linea;
+          while((linea=br.readLine())!=null){
+              String[] lin = linea.split("-");
+              System.out.println(lin.length);
+              System.out.println(lin[0]);
+              System.out.println(lin[1]);
+              System.out.println(lin[2]);
+              System.out.println(lin[3]);
+              agregarArbol(new Puesto(Integer.parseInt(lin[0]), lin[1], lin[2], Integer.parseInt(lin[3])));
+          }
+        }catch (Exception e) {
+            e.printStackTrace();
+        }finally{
+            try {
+                if (null!= fr)fr.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+    }
+    
+    public static void escribirFichero(String texto){
+        FileWriter fichero = null;
+        PrintWriter pw = null;
+        try{
+            fichero = new FileWriter("data.txt");
+            pw = new PrintWriter(fichero);
+            pw.print(texto);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally{
+            try{
+                if(null != fichero) fichero.close();
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+    }
+    
+    
+    
+    
     public static Puesto crearPuesto(){ //nos permite crear un nuevo puesto para insertarlo en un nodo
         //creando y leyendo datos del  nuevo puesto
         Puesto nuevo = new Puesto(leerEnteros("Ingrese el identificador del nuevo puesto"), leerTexto("Ingrese el nombre del nuevo puesto"), leerTexto("Ingrese el nombre del titular del puesto"), leerEnteros("Ingrese el identificador del puesto jefe"));
@@ -96,17 +156,26 @@ public class Lornahn {
         elementosPrevios();
         int op = 0;
         while(true){
-            op = leerEnteros("Ingrese una opcion: \n\n1. Agregar elemento al arbol.\n2. Imprimir Arbol\n3. Operaciones con puesto\n0. Salir");
+            op = leerEnteros("Ingrese una opcion: \n\n1. Agregar elemento al arbol.\n2. Imprimir Arbol\n3. Operaciones con puesto\n4. Guardar en archivo\n5. Leer de archivo\n0. Salir");
             switch(op){
                 case 1:
                     agregarArbol(crearPuesto());
                     break;
                 case 2: 
-                    String texto = arb.impresion(arb.raiz,"","");
+                    String texto;
+                    if(arb.raiz==null) texto = "Arbol Vacio";
+                    else texto = arb.impresion(arb.raiz,"","");
                     notificar(".: ARBOL ACTUAL :.", texto);
                     break;
                 case 3:
                     operacionNodo();
+                    break;
+                case 4:
+                    escribirFichero(arb.writeFichero(arb.raiz,""));
+                    notificar(".: GUARDANDO EN FICHERO :.","Guardado");
+                    break;
+                case 5:
+                    leerFichero();
                     break;
                 case 0:
                     notificar(".: Salida :.","Gracias por usar la aplicacion :\'v");

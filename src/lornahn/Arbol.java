@@ -80,16 +80,26 @@ public class Arbol {
     }
     
     String impresionPuesto(NodoArbol puesto){
-        String text = "Id: "+puesto.getPuesto().getId_puesto()+"     "
+        String text = "DATOS DEL PUESTO:\n"
+                + "Id: "+puesto.getPuesto().getId_puesto()+"\n"
                 + "Descripcion: "+puesto.getPuesto().getPuesto()+" \n"
-                + "Titular: "+puesto.getPuesto().getEmpleado()+"     "
-                + "Id_jefe: "+puesto.getPuesto().getId_puesto_jefe()+"\n\n";
+                + "Titular: "+puesto.getPuesto().getEmpleado()+"\n"
+                + "Id_jefe: "+puesto.getPuesto().getId_puesto_jefe()+"\n\nTAREAS:\n";
         for (int i = 0; puesto.getPuesto().tareas_pendientes != null && i < puesto.getPuesto().tareas_pendientes.length; i++) {
             text += "Tarea "+(i+1)+": "+puesto.getPuesto().tareas_pendientes[i].descripcion+"\n";
         }
         return text;
     }
     
+    String writeFichero(NodoArbol elemento, String texto){
+        texto+= elemento.getPuesto().getId_puesto() + "-" + elemento.getPuesto().getPuesto() + "-" + elemento.getPuesto().getEmpleado() + "-" + elemento.getPuesto().getId_puesto_jefe()+"\n";
+        if (elemento.getSubordinados() != null) {
+            for (int i = 0; i < elemento.getSubordinados().length; i++) {
+                    texto +=  writeFichero(elemento.getSubordinado(i), "");
+            }
+        }
+            return texto;
+    }
     
     String impresion(NodoArbol elemento, String espacio, String texto) {
         texto+= espacio + "Id: " + elemento.getPuesto().getId_puesto() + " - Puesto: " + elemento.getPuesto().getPuesto() + " - Titular: " + elemento.getPuesto().getEmpleado() + " - Jefe: " + elemento.getPuesto().getId_puesto_jefe()+"\n";
