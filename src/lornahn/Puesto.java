@@ -78,30 +78,38 @@ public class Puesto {
     }
     
     public void insertarTareas_pendientes(String tarea){
-        if(tareas_pendientes.length < 1) {
+        if(tareas_pendientes == null) {
             tareas_pendientes = new tareas[1];
-            tareas_pendientes[0].descripcion = tarea;
+            tareas_pendientes[0]= new tareas(tarea);
         } else {
             tareas[] temp = new tareas[tareas_pendientes.length+1];
-            temp = tareas_pendientes;
             for(int i = 0; i < tareas_pendientes.length; i++){
                 temp[i] = tareas_pendientes[i];
             }
-            temp[tareas_pendientes.length].descripcion = tarea;
+            temp[tareas_pendientes.length] = new tareas(tarea);
             this.tareas_pendientes = temp;
         }
     }
     
-    public void eliminarTareas_pendientes(){
-        if (tareas_pendientes.length < 1 ) {
-            System.out.println("El empleado del puesto actual no tiene tareas pendientes");
-        }else{
-            tareas[] temp = new tareas[tareas_pendientes.length-1];
+    public String eliminarTareas_pendientes() {
+        String notificacion = "";
+        if (tareas_pendientes == null) {
+            notificacion = "El empleado del puesto actual no tiene tareas pendientes";
+        } else if (tareas_pendientes.length == 1) {
+            tareas_pendientes = null;
+             notificacion = "Tarea Eliminada exitosamente";
+        } else {
+            tareas[] temp = new tareas[tareas_pendientes.length - 1];
             for (int i = 1; i < tareas_pendientes.length; i++) {
-                temp[i-1] = tareas_pendientes[i];
-                System.out.println("Tarea eliminada exitosamente");
+                temp[i - 1] = tareas_pendientes[i];
             }
+            tareas_pendientes = new tareas[temp.length];
+            for(int i = 0; i < temp.length; i++){
+                tareas_pendientes[i] = temp[i];
+            }
+             notificacion = "Tarea Eliminada exitosamente";
         }
+        return notificacion;
     }
     
 }
